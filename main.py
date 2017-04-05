@@ -4,6 +4,8 @@ import functools
 import os
 import pandas as pd
 import numpy as np
+from query_input_yes_no import query_yes_no
+import sys
 
 class PandasModel(QtCore.QAbstractTableModel):
     """
@@ -242,10 +244,19 @@ class MainWindow(QtGui.QWidget):
             self.view.page().mainFrame().evaluateJavaScript(js_call)
 
 if __name__ == '__main__':
-    proxy = raw_input("Proxy:")
-    port = raw_input("Proxy Port:")
-    networkProxy = QtNetwork.QNetworkProxy(QtNetwork.QNetworkProxy.HttpProxy, proxy, int(port))
-    QtNetwork.QNetworkProxy.setApplicationProxy(networkProxy)
+    proxy_queary = query_yes_no("Input Proxy Settings?")
+    print('')
+
+    if proxy_queary:
+        proxy = raw_input("Proxy:")
+        port = raw_input("Proxy Port:")
+        try:
+            networkProxy = QtNetwork.QNetworkProxy(QtNetwork.QNetworkProxy.HttpProxy, proxy, int(port))
+            QtNetwork.QNetworkProxy.setApplicationProxy(networkProxy)
+        except ValueError:
+            print('No proxy settings supplied..')
+            sys.exit()
+
 
     app = QtGui.QApplication([])
     w = MainWindow()
