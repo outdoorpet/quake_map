@@ -19,7 +19,8 @@ class PandasModel(QtCore.QAbstractTableModel):
         self.cat_nm = cat_nm
 
         # Column headers for tables
-        self.cat_col_header = ['Event ID', 'Time (UTC Timestamp)', 'Lat (dd)', 'Lon  (dd)', 'Depth (km)', 'Mag', 'Time (UTC)']
+        self.cat_col_header = ['Event ID', 'Time (UTC Timestamp)', 'Lat (dd)', 'Lon  (dd)',
+                               'Depth (km)', 'Mag', 'Time (UTC)', 'Julian Day']
 
     def rowCount(self, parent=None):
         return self.r
@@ -173,11 +174,11 @@ class MainWindow(QtGui.QWidget):
 
         dropped_cat_df = self.cat_df
 
-        # make UTC string from earthquake cat
+        # make UTC string from earthquake cat and add julian day column
         def mk_cat_UTC_str(row):
-            return (UTCDateTime(row['qtime']).ctime())
+            return (pd.Series([UTCDateTime(row['qtime']).ctime(), UTCDateTime(row['qtime']).julday]))
 
-        dropped_cat_df['Q_time_str'] = dropped_cat_df.apply(mk_cat_UTC_str, axis=1)
+        dropped_cat_df[['Q_time_str', 'julday']] = dropped_cat_df.apply(mk_cat_UTC_str, axis=1)
 
         self.tbld = TableDialog(parent=self, cat_df=dropped_cat_df)
 
