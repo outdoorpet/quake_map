@@ -247,7 +247,7 @@ if __name__ == '__main__':
     proxy_queary = query_yes_no("Input Proxy Settings?")
     print('')
 
-    if proxy_queary:
+    if proxy_queary == 'yes':
         proxy = raw_input("Proxy:")
         port = raw_input("Proxy Port:")
         try:
